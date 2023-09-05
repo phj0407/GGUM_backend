@@ -1,36 +1,69 @@
 from flask import Flask, request, jsonify
 
-
 app = Flask(__name__)
-
-diary_temp = [
-    {'date' : '20230828, ', 'contents' : '내용', 'userId':'user1' },
-    {'date' : '20230829, ', 'contents' : '내용', 'userId':'user1'}]
 
 @app.route('/')
 def main():
     return 'home_page'
 
-@app.route('/test/<userId>')
-def get_userpage(userId):
-    return jsonfy({'user' : userId})
+# 회원정보 ------------------------------------------------------------------
+# user table : 어떤 속성 사용할지 : ex) user_id, student_id, user_name, generation
+@app.route('/login')
+def login():
 
-@app.route('/test/<userId>', methods=['POST'])
-def create_diary():
-    new_diary = request.json
-    #new_diary['date'] = 날짜가져오기
-    diary_temp.append(new_diary)
-    return jsonify( { 'message' : 'diary created successfully', 'diary' : new_diary} ), 201
+    #     user_id = DB에서 회원조회
 
-@app.route('/test/<userId>/<int:date>', methods = ['PUT'])
-def update_diary(date):
-    updated_diary = request.json
-    for diary in diary_temp:
-        if diary['date'] == date:
-            diary.update(updated_diary)
-            return jsonify({ 'message' : 'diary updated successfully', 'diary' : diary} )
-        return jsonify({ 'message' : 'diary not found'} ), 404
-    
+
+@app.route('/sign_in', methods=['POST'])
+def sign_in():
+
+ #   DB에 정보 등록 (이름, 학번, 기수)
+ #     new_user_id = 제일 최신 user_id 가져와 +1
+
+
+# 일지 관련----------------------------------------------------------------
+# diary table : 어떤 속성 사용할지 : ex) diary_id, user_id, date, content
+@app.route('/')
+def get_diary():
+
+    # all_diary = user_id 에 맞는 diary 모두 가져오기
+  
+
+@app.route('/')
+def post_diary():
+
+    #new_diary 를 DB에 추가
+    #new_diary_id = 최신 diary_id +1
+
+
+@app.route('/')
+def get_diary_by_date():
+    # diary = user_id 중 date 에 맞는 diary 가져오기
+  
+
+@app.route('/')
+def delete_diary( );
+    # diary = user_id 중 date 에 맞는 diary 삭제
+  
+
+# 3. 공지사항----------------------------------------------------------------------
+# notice table : 어떤 속성 사용할지 : ex) notice_id, user_id, date, content, tag
+@app.route('/notice')
+def get_notice():
+    # 모든 공지사항 가져오기
+
+@app.route('/')
+def post_notice():
+    # 공지사항 올리기
+
+@app.route('/')
+def update_notice():
+    # 공지사항 수정 
+
+@app.route('/')
+def delete_notice():
+    #공지사항 삭ㅈ[
+
 if __name__ == '__main__':
     app.run(debug=True)
     
