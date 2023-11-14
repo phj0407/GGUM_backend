@@ -1,5 +1,7 @@
-from flask import Flask, request, jsonify
-from utils import *
+from flask import request, Blueprint
+from utils import*
+
+bp_notice = Blueprint('notice', __name__, url_prefix='/notices')
 
 app = Flask(__name__)
 
@@ -16,7 +18,7 @@ def check_notice_publisher(cursor, notice_id, user_id):
     return db_user_id == user_id
 
 
-@app.route('/notice')
+@bp_notice.route('/')
 def get_notice(): #최근 n개 공지를 반환, , http://127.0.0.1:5000/notice?count=n 꼴로 요청
     count = request.args.get('count', default=5, type=int)
     connection = get_connection()
@@ -34,7 +36,7 @@ def get_notice(): #최근 n개 공지를 반환, , http://127.0.0.1:5000/notice?
     }
 
 
-@app.route('/notice', methods=['POST'])
+@bp_notice.route('/', methods=['POST'])
 def post_notice(): #공지 게시
     connection = get_connection()
     cursor = connection.cursor()
@@ -58,7 +60,7 @@ def post_notice(): #공지 게시
     }
 
 
-@app.route("/notice/<int:notice_id>", methods=['PUT'])
+@bp_notice.route("/<int:notice_id>", methods=['PUT'])
 def update_notice(notice_id):
     connection = get_connection()
     cursor = connection.cursor()
@@ -85,7 +87,7 @@ def update_notice(notice_id):
     }
 
 
-@app.route("/notice/<int:notice_id>", methods=['DELETE'])
+@bp_notice.route("/<int:notice_id>", methods=['DELETE'])
 def delete_notice(notice_id):
     connection = get_connection()
     cursor = connection.cursor()

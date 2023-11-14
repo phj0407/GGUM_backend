@@ -1,10 +1,10 @@
-from flask import Flask, request, jsonify
+from flask import request, Blueprint
 from utils import*
 
+bp_diary = Blueprint('diary', __name__, url_prefix='/diaries')
 # import config
-app = Flask(__name__)
 
-@app.route('/diary/<string:date>', methods=['GET', 'POST'])
+@bp_diary.route('/<string:date>', methods=['GET', 'POST'])
 def get_and_create_diary(date):
     if request.method=='GET':
         # 해당 날짜에 등록된 diary 의 {id, title, user_name} 을 반환
@@ -63,7 +63,7 @@ def get_and_create_diary(date):
             "diary_id": new_diary_id
         }
 
-@app.route('/diary/<date>/<int:user_id>', methods =[ 'PUT', 'DELETE'])
+@bp_diary.route('/<date>/<int:user_id>', methods =[ 'PUT', 'DELETE'])
 def diary_manage(date, user_id):
     if request.method == 'PUT': # 특정 날짜에 특정 사용자가 작성한 diary 내요을 수정
         data = request.get_json()
@@ -102,10 +102,6 @@ def diary_manage(date, user_id):
         return {
             'msg': 'data deleted successfully'
             }
-
-if __name__ == '__main__':
-    app.run(debug=True)
-
 
 
 

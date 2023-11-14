@@ -1,7 +1,8 @@
-from flask import Flask, request, jsonify
-from utils import *
+from flask import request, Blueprint
+from utils import*
 
-app = Flask(__name__)
+
+bp_survey = Blueprint('survey', __name__, url_prefix='/surveys')
 
 
 def check_survey_publisher(cursor, survey_id, user_id):
@@ -15,30 +16,29 @@ def check_survey_publisher(cursor, survey_id, user_id):
     return db_user_id[0] == int(user_id)
 
 
-@app.route('/survey/<int:survey_id>') #해당 survey의 정보를 로드
+@bp_survey.route('/<int:survey_id>') #해당 survey의 정보를 로드
 def get_survey_data(survey_id):
     connection = get_connection()
     cursor = connection.cursor()
 
     get_query = '''
-    SELECT survey_date, title, description, survey_date
+    SELECT survey_date, title, description
     FROM survey
     WHERE id = %s
     '''
     cursor.execute(get_query, (survey_id,))
     data = cursor.fetchall()
-    date, title, desc, survey_date= data
+    date, title, desc = data[0]
 
     return {
         'survey date': date,
         'title': title,
         'desc': desc,
-        'start date': survey_date,
        # 'end_date': end_date
     }
 
 
-@app.route('/survey/<int:survey_id>/participant') #해당 survey에 참석한 attendee를 로드
+@bp_survey.route('/<int:survey_id>/participant') #해당 survey에 참석한 attendee를 로드
 def get_attendee(survey_id):
     connection = get_connection()
     cursor = connection.cursor()
@@ -57,7 +57,7 @@ def get_attendee(survey_id):
     return attendee_ids
 
 
-@app.route('/survey') #활성화중인 survey를 로드
+@bp_survey.route('/') #활성화중인 survey를 로드
 def get_active_survey():
     connection = get_connection()
     cursor = connection.cursor()
@@ -75,7 +75,7 @@ def get_active_survey():
     return survey_ids
 
 
-@app.route('/survey', methods=['POST'])
+@bp_survey.route('/', methods=['POST'])
 def post_survey():  # survey 게시
     connection = get_connection()
     cursor = connection.cursor()
@@ -101,14 +101,14 @@ def post_survey():  # survey 게시
     }
 
 
-@app.route('/survey/<int:survey_id>', methods=['POST'])
+@bp_survey.route('/<int:survey_id>', methods=['POST'])
 def participate_survey(survey_id): #survey에 attendee 등록
     connection = get_connection()
     cursor = connection.cursor()
 
     data = request.get_json()
 
-    values = (data['user_id'], survey_id)
+    values = (data['attendee_id'], survey_id)
     insert_query = '''
             INSERT INTO user_survey(attendee_id, survey_id)
             VALUES (%s, %s)
@@ -125,7 +125,7 @@ def participate_survey(survey_id): #survey에 attendee 등록
     }
 
 
-@app.route('/survey/<int:survey_id>', methods=['PUT'])
+@bp_survey.route('/<int:survey_id>', methods=['PUT'])
 def update_survey(survey_id): #투표 게시글 수정
     connection = get_connection()
     cursor = connection.cursor()
@@ -169,7 +169,7 @@ def update_survey(survey_id): #투표 게시글 수정
 
     return msg
 
-@app.route('/survey/<int:survey_id>/participant', methods=['DELETE'])
+@bp_survey.route('/<int:survey_id>/participant', methods=['DELETE'])
 def cancel_survey(survey_id): #투표 취소
     connection = get_connection()
     cursor = connection.cursor()
@@ -190,7 +190,7 @@ def cancel_survey(survey_id): #투표 취소
     }
 
 
-@app.route('/survey/<int:survey_id>', methods=['DELETE'])
+@bp_survey.route('/<int:survey_id>', methods=['DELETE'])
 def delete_survey(survey_id): #게시한 투표 삭제
     connection = get_connection()
     cursor = connection.cursor()
@@ -212,7 +212,3 @@ def delete_survey(survey_id): #게시한 투표 삭제
     connection.close()
 
     return msg
-
-
-if __name__ == '__main__':
-    app.run(debug=True)

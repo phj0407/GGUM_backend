@@ -1,17 +1,11 @@
-from flask import Flask, request, jsonify
-from utils import *
+from flask import request, Blueprint
+from utils import*
 
-# import config
-app = Flask(__name__)
-
-
-@app.route('/')
-def main():
-    return 'home_page'
+bp_user = Blueprint('users', __name__, url_prefix='/users')
 
 
 # 회원정보 ------------------------------------------------------------------
-@app.route('/users')
+@bp_user.route('/')
 def login():
     data = request.get_json()
     connection = get_connection()
@@ -39,7 +33,7 @@ def login():
         }
 
 
-@app.route('/users', methods=['POST'])
+@bp_user.route('/', methods=['POST'])
 def sign_in():
     data = request.get_json()
     connection = get_connection()
@@ -63,6 +57,3 @@ def sign_in():
         "pss" : hashed_password
     }
 
-
-if __name__ == '__main__':
-    app.run(debug=True)
