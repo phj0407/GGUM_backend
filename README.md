@@ -1,3 +1,25 @@
+## 서버
+
+- [생성한 가상 서버 (인스턴스)](https://www.notion.so/AWS-41624ac80d6242a29014fd66840a1abd?pvs=21)
+- aws 계정
+    - 아이디 : [hyejin2371@gmail.com](mailto:hyejin2371@gmail.com)
+    - 비밀번호 : phj9192371@
+- 인스턴스ID : i-0f8845ec796d87044
+- 서버 주소 :  [http://172.31.40.88:5000](http://172.31.40.88:5000/)
+
+# DB
+
+1. [인스턴스 세팅](https://velog.io/@kyj311/AWS-EC2-%EC%95%8C%EC%95%84%EB%B3%B4%EA%B8%B0)
+2. [RDS (Relative Database Service) 인스턴스 생성](https://velog.io/@kyj311/AWS-RDS-%EC%95%8C%EC%95%84%EB%B3%B4%EA%B8%B0)
+3. 생성한 DB 인스턴스 정보 : [링크](https://ap-northeast-2.console.aws.amazon.com/rds/home?region=ap-northeast-2#database:id=honggumdb;is-cluster=false) 에서 직접 확인 가능
+    1. 마스터 암호 : hongik45
+    2. 마스터 사용자 이름 admin
+    3. DB 인스턴스 식별자 (이름) : honggumDB
+    4. 포트 : 3306
+    5. host (엔드포인트) : honggumdb.capnwelofgc3.ap-northeast-2.rds.amazonaws.com
+
+
+
 # user
 ### '/users'
 ```
