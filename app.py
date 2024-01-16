@@ -1,6 +1,6 @@
 from flask import Flask, request
 from utils import*
-import user, diary, notice, survey
+from provider import user, diary, notice, survey
 app = Flask(__name__)
 
 @app.route('/')
