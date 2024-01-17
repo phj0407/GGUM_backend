@@ -25,37 +25,47 @@
 ```
 [GET] login() 
 {
-	student_number : 
-	password:
+	"student_number" : "C111075"
+	"password": "1234"
 }
 ```
 ```
- [POST] sign_in()
+ [POST] http://43.200.185.250:5000/users (sign_in())
 {
-	name:
-	student_number : 
-	cohort:
-	password:
+	"name": "HYEJIN",
+	"student_number" : "C111075",
+	"cohort": 47,
+	"password":"1234"
 }
   
 ```
+```
+# 성공 시 user의 id 반환
+{
+    "id": 6,
+    "msg": "로그인 성공"
+}
+```
+  
 # diary
 ### '/diaries/ { string : date }'
+ex)  http://127.0.0.1:5000/diaries/2024-01-17
 ```
-[GET]  해당 날짜에 등록된 diary 의 {id, title, user_name} 을 반환
+[GET]  date를 입력받아 해당 날짜에 등록된 diary 의 {id, title, user_name} 을 반환.
+request { 없음 }
 return {
-                "diary_id" : id,
-                "title" : title,
-                "user_name" : user_name,
+                "diary_id" : id {int 타입}
+                "title" : "제목",
+                "user_name" : "사용자 이름,
             }
 ```
 ```
-[POST] new_diary 를 DB에 추가하고 새로 생성한 diary의 id를 반환
+[POST] new_diary 를 DB에 추가하고 새로 생성한 diary의 id를 반환한다. date는 위와 같이 path 파라미터로 넘겨줌
 
 request {
-	user_id :
-	title:
-	content:
+	"user_id" : 1,
+	"title": "2024새해 첫운동",
+	"content": "2024년이다 난 24살이다 "
 }
 return {
             "message": "diary created successfully",
@@ -68,7 +78,7 @@ return {
 [PUT] 특정 날짜에 특정 사용자가 작성한 diary 내용을 수정
 request {
 	id: #수정할 diary 선택
-	user_id: #작성자만 수졍 가능하도록
+	user_id: #작성자만 수졍 가능하도록 확인
 	title:
 	content:
 }
@@ -78,6 +88,7 @@ return{
 ```
 ```
 [DELETE]  특정 날짜에 특정 사용자가 작성한 diary를 삭제
+request { 없음 }
 return {
             'msg': 'data deleted successfully'
             }
@@ -94,7 +105,13 @@ request {
 	content :
 }
 return {
-        "notice_id": notice_id
+            "notice_id list": [
+        11,
+        10,
+        9,
+        8,
+        7
+    ]
     }
 ```
   
@@ -140,7 +157,15 @@ return {
 ```
 [GET] 활성화중인 survey를 로드
 return {
-        'id' 리스트
+        [
+    3,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+]
 }
 ```
 
@@ -148,20 +173,20 @@ return {
 ```
 [GET] 해당 survey의 정보를 로드
 return {
-        'survey date': date,
-        'title': title,
-        'desc': desc,
+	"desc": "테스트공지3입니다",
+    "survey date": "Thu, 18 Jan 2024 00:00:00 GMT",
+    "title": "테스트공지3"
     }
 ```
 
 ```
 [PUT] 투표 게시글 수정
 request{
-        'survey_date':
-        'user_id':
-        'title': 
-        'description'
-        'isactive'
+        "survey_date:
+        "user_id":
+        "title": 
+        "description"
+        "isactive"
 중 수정 원하는 항목
 }
 ```
@@ -169,7 +194,7 @@ request{
 ```
 [DELETE] 투표 게시글 삭제
 request {
-        'user_id':
+         "user_id" : 1
 }
 ```
   
@@ -177,11 +202,20 @@ request {
 ### '/surveys/ { int : survey_id } /participant'
 ```
 [POST] survey에 attendee 등록
-request { 'attendee_id' }
-return { 'msg' } 
+request { "attendee_id" : 1 }
+return { "msg" } 
 
 [GET ] 해당 survey에 참석한 attendee를 로드
 { id 리스트}
+
+[DELETE] 해당 survey 에 투표한 attendee를 삭제
+request  {
+    "attendee_id" : 3
+}
+return {
+    "msg": "delete success"
+}
+
 
 [DELETE] 투표취소
 request { 'attendee_id' }
