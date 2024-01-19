@@ -35,7 +35,7 @@ def get_and_create_diary(date):
         cursor.close()
         connection.close()
 
-        return diary_list
+        return {"diary datas" : diary_list};
 
     if request.method == 'POST':
         #new_diary 를 DB에 추가하고 새로 생성한 diary의 id를 반환
@@ -59,11 +59,12 @@ def get_and_create_diary(date):
         connection.close()
 
         return{
-            "message": "diary created successfully",
-            "diary_id": new_diary_id
+            "msg": "일기 등록 성공",
+            "diary id": new_diary_id
         }
 
 @bp_diary.route('/<date>/<int:user_id>', methods =[ 'PUT', 'DELETE'])
+#TODO : 작성자 확인 로직 추가
 def diary_manage(date, user_id):
     if request.method == 'PUT': # 특정 날짜에 특정 사용자가 작성한 diary 내요을 수정
         data = request.get_json()
@@ -82,7 +83,7 @@ def diary_manage(date, user_id):
         connection.close()
 
         return{
-            "message": "update successfully",
+            "msg": "일기 수정 완료",
             }
 
     if request.method == 'DELETE': # 특정 날짜에 특정 사용자가 작성한 diary를 삭제
@@ -100,7 +101,7 @@ def diary_manage(date, user_id):
         cursor.close()
         connection.close()
         return {
-            'msg': 'data deleted successfully'
+            'msg': '일기 삭제 완료'
             }
 
 

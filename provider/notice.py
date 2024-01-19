@@ -31,8 +31,11 @@ def get_notice(): #최근 n개 공지를 반환, , http://127.0.0.1:5000/notice?
     '''
     cursor.execute(get_query, (count,))
     result_list = cursor.fetchall()
+    notice_id_list = []
+    for row in result_list:
+        notice_id_list.append(row[0])
     return {
-        'result': result_list
+        'notice ids': notice_id_list
     }
 
 
@@ -56,7 +59,7 @@ def post_notice(): #공지 게시
     connection.close()
 
     return {
-        "notice_id": notice_id
+        "notice id": notice_id
     }
 
 
@@ -77,10 +80,10 @@ def update_notice(notice_id):
         values = (data["content"], notice_id)
         cursor.execute(update_query, values)
         connection.commit()
-        msg = "수정 성공"
+        msg = "공지 수정 완료"
 
     else:
-        msg = "사용자가 일치하지 않습니다"
+        msg = "작성자와 일치하지 않습니다"
 
     return {
         'msg': msg
@@ -100,9 +103,9 @@ def delete_notice(notice_id):
     if check_notice_publisher(cursor, notice_id, data['user_id']):
         cursor.execute(delete_query, (notice_id,))
         connection.commit()
-        msg = "삭제 성공"
+        msg = "공지 삭제 완료"
     else:
-        msg = "사용자가 일치하지 않습니다"
+        msg = "작성자와 일치하지 않습니다"
 
     return {
         'msg': msg

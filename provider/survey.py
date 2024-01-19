@@ -13,7 +13,9 @@ def check_survey_publisher(cursor, survey_id, user_id):
     cursor.execute(get_query, (survey_id,))
     db_user_id = cursor.fetchone()
 
-    return db_user_id[0] == int(user_id)
+    return {
+        'survey ids' : db_user_id[0] == int(user_id)
+    }
 
 
 @bp_survey.route('/<int:survey_id>') #해당 survey의 정보를 로드
@@ -31,9 +33,10 @@ def get_survey_data(survey_id):
     date, title, desc = data[0]
 
     return {
-        'survey date': date,
         'title': title,
         'desc': desc,
+        'survey date': date,
+
        # 'end_date': end_date
     }
 
@@ -54,7 +57,7 @@ def get_attendee(survey_id):
 
     attendee_ids = [row[0] for row in data]
 
-    return attendee_ids
+    return {"attendee ids" : attendee_ids}
 
 
 @bp_survey.route('/') #활성화중인 survey를 로드
@@ -72,7 +75,7 @@ def get_active_survey():
 
     survey_ids = [row[0] for row in data]
 
-    return survey_ids
+    return {"survey ids" : survey_ids}
 
 
 @bp_survey.route('/', methods=['POST'])
@@ -87,7 +90,7 @@ def post_survey():  # survey 게시
         INSERT INTO survey(publisher_id, survey_date, title, description)
         VALUES (%s, %s, %s, %s)
         '''
-    msg = 'survey posted successfully'
+    msg = '투표 등록 완료'
 
     cursor.execute(insert_query, values)
     new_id = cursor.lastrowid
@@ -97,7 +100,7 @@ def post_survey():  # survey 게시
 
     return {
         'msg': msg,
-        'id': new_id
+        'posted survey id': new_id
     }
 
 
@@ -113,7 +116,7 @@ def participate_survey(survey_id): #survey에 attendee 등록
             INSERT INTO user_survey(attendee_id, survey_id)
             VALUES (%s, %s)
             '''
-    msg = 'survey attended successfully'
+    msg = '투표 참석 완료'
     cursor.execute(insert_query, values)
     new_id = cursor.lastrowid
     connection.commit()
@@ -159,15 +162,15 @@ def update_survey(survey_id): #투표 게시글 수정
 
         cursor.execute(update_query, values)
         connection.commit()
-        msg = "수정 완료"
+        msg = "투표 수정 완료"
 
     else:
-        msg = "사용자가 일치하지 않습니다"
+        msg = "작성자와 일치하지 않습니다"
 
     cursor.close()
     connection.close()
 
-    return msg
+    {"msg" : msg}
 
 @bp_survey.route('/<int:survey_id>/participant', methods=['DELETE'])
 def cancel_survey(survey_id): #투표 취소
@@ -186,7 +189,7 @@ def cancel_survey(survey_id): #투표 취소
     cursor.close()
     connection.close()
     return {
-        "msg": "delete success"
+        "msg": "투표 삭제 완료"
     }
 
 
@@ -202,13 +205,13 @@ def delete_survey(survey_id): #게시한 투표 삭제
         WHERE id= %s
         '''
         cursor.execute(delete_query, (survey_id,) )
-        msg = '삭제 성공'
+        msg = '삭제 완료'
 
         connection.commit()
     else:
-        msg = '사용자와 일치하지 않습니다'
+        msg = '작성자와 일치하지 않습니다'
 
     cursor.close()
     connection.close()
 
-    return msg
+    return {"msg" : msg}
