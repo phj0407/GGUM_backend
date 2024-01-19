@@ -5,35 +5,34 @@ bp_user = Blueprint('users', __name__, url_prefix='/users')
 
 
 # 회원정보 ------------------------------------------------------------------
-@bp_user.route('/')
+@bp_user.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
     connection = get_connection()
     cursor = connection.cursor()
+
     input_password = data["password"]
+    student_number = data["student_number"]
 
     query = '''
-             SELECT password, id  FROM user WHERE school_id = %s
+             SELECT password, id  FROM user WHERE student_number = %s
              '''
-    cursor.execute(query, (data["school_id"],))
-    result = cursor.fetchall()
+    cursor.execute(query, (student_number,))
+    result = cursor.fetchone()
 
-    if pbkdf2_sha256.verify(input_password, result[0]):
+    if check_password(input_password, student_number, result[0]):
         return {
             "msg": "로그인 성공",
-            "user_id" : result[1]
+            "id" : result[1]
         }
     else:
 
         return {
             "msg": "사용자 조회 실패",
-            "result": 0,
-            "saved_password" : result[1],
-            "original_password+hash" : data["password"]+data["school_id"],
         }
 
 
-@bp_user.route('/', methods=['POST'])
+@bp_user.route('/register', methods=['POST'])
 def sign_in():
     data = request.get_json()
     connection = get_connection()
@@ -53,7 +52,6 @@ def sign_in():
     connection.close()
 
     return {
-        "result": "user register success",
-        "pss" : hashed_password
+        "msg": "사용자 등록 성공",
     }
 
