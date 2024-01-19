@@ -21,16 +21,28 @@
 
 
 # user
-### '/users'
+### '/users/login'
 ```
-[GET] login() 
-{
+[POST] http://43.200.185.250:5000/users/login
+request{
 	"student_number" : "C111075"
 	"password": "1234"
 }
+
+return { 
+    "msg": "로그인 성공",
+    "id" : result[1],
+    "username" : result[2]
+
+	또는
+
+    "msg": "사용자 조회 실패",
+}
+
 ```
+### '/users/register'
 ```
- [POST] http://43.200.185.250:5000/users (sign_in())
+ [POST] http://43.200.185.250:5000/users/register
 {
 	"name": "HYEJIN",
 	"student_number" : "C111075",
@@ -40,10 +52,8 @@
   
 ```
 ```
-# 성공 시 user의 id 반환
-{
-    "id": 6,
-    "msg": "로그인 성공"
+return {
+    "msg": "사용자 등록 성공"
 }
 ```
   
@@ -54,9 +64,10 @@ ex)  http://127.0.0.1:5000/diaries/2024-01-17
 [GET]  date를 입력받아 해당 날짜에 등록된 diary 의 {id, title, user_name} 을 반환.
 request { 없음 }
 return {
-                "diary_id" : id {int 타입}
+               [ "diary_id" : id {int 타입}
                 "title" : "제목",
                 "user_name" : "사용자 이름,
+		] 의 리스트
             }
 ```
 ```
@@ -68,8 +79,8 @@ request {
 	"content": "2024년이다 난 24살이다 "
 }
 return {
-            "message": "diary created successfully",
-            "diary_id": new_diary_id
+            "msg": "diary created successfully",
+            "diary id": new_diary_id
         }
 ```
   
@@ -83,14 +94,14 @@ request {
 	content:
 }
 return{
-            "message": "update successfully",
+            "msg": "일기 수정 완료"
             }
 ```
 ```
 [DELETE]  특정 날짜에 특정 사용자가 작성한 diary를 삭제
 request { 없음 }
 return {
-            'msg': 'data deleted successfully'
+            "msg": "일기 삭제 완료"
             }
 ```
   
@@ -126,7 +137,7 @@ request {
 	#last_edit_at 업데이트 필요
 
 return{
-	'msg' : '사용자가 일치하지 않습니다 / 수정 성공'
+	'msg' : '작성자와 일치하지 않습니다 / 공지 수정 완료'
 }
 ```
 ```
@@ -135,7 +146,7 @@ request {
 	user_id: #작성자만 삭제 가능하도록 확인
 }
 return{
-	'msg' : '사용자가 일치하지 않습니다 / 삭제 성공'
+	'msg' : '작성자와 일치하지 않습니다 / 공지 삭제 완료'
 }
 ```
   
@@ -150,22 +161,22 @@ request {
         'description'
 }
 return {
-        'msg': msg,
+        'msg': 투표 등록 완료,
         'id': new_id
     }
 ```
 ```
 [GET] 활성화중인 survey를 로드
 return {
-        [
-    3,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12
-]
+        survey ids : [
+		    3,
+		    7,
+		    8,
+		    9,
+		    10,
+		    11,
+		    12
+		]
 }
 ```
 
@@ -213,11 +224,11 @@ request  {
     "attendee_id" : 3
 }
 return {
-    "msg": "delete success"
+    "msg": "투표 취소 완료"
 }
 
 
 [DELETE] 투표취소
-request { 'attendee_id' }
-return { 'msg' } 
+request { 'user_id' : id}
+return { 'msg' : "투표글 삭제 완료/ 작성자와 일치하지 않습니다" } 
 ```
