@@ -13,11 +13,11 @@ def hash_password(original_password, salt):
     return password
 
 
-def check_password(original_password, salt, hashed_password):
+def check_password(input_password, salt, saved_password):
 
     # 입력 비밀번호에 동일한 솔트 값을 추가하여 해싱
-    print(original_password, salt)
-    check = pbkdf2_sha256.verify(original_password, hashed_password)
+    input_password = str(input_password) + str(salt)
+    check = pbkdf2_sha256.verify(input_password, saved_password)
 
     # 해시된 입력 비밀번호와 저장된 해시된 비밀번호 비교
     return check
@@ -26,7 +26,8 @@ def get_connection():
         host="honggumdb.capnwelofgc3.ap-northeast-2.rds.amazonaws.com",
         user="admin",
         port="3306",
-        password="hongik45",
+        password="honggum45",
         database="honggumDB"
+
     )
     return connection
