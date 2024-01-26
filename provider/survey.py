@@ -189,7 +189,7 @@ def cancel_survey(survey_id): #투표 취소
     cursor.close()
     connection.close()
     return {
-        "msg": "투표 삭제 완료"
+        "msg": "투표 취소 완료"
     }
 
 
@@ -205,7 +205,7 @@ def delete_survey(survey_id): #게시한 투표 삭제
         WHERE id= %s
         '''
         cursor.execute(delete_query, (survey_id,) )
-        msg = '삭제 완료'
+        msg = '투표글 삭제 완료'
 
         connection.commit()
     else:

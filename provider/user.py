@@ -15,7 +15,7 @@ def login():
     student_number = data["student_number"]
 
     query = '''
-             SELECT password, id  FROM user WHERE student_number = %s
+             SELECT password, id, name  FROM user WHERE student_number = %s
              '''
     cursor.execute(query, (student_number,))
     result = cursor.fetchone()
@@ -23,7 +23,8 @@ def login():
     if check_password(input_password, student_number, result[0]):
         return {
             "msg": "로그인 성공",
-            "id" : result[1]
+            "id" : result[1],
+            "username" : result[2]
         }
     else:
 

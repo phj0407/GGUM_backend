@@ -1,4 +1,4 @@
-from flask import request, Blueprint
+from flask import request, Blueprint, jsonify
 from utils import*
 
 bp_notice = Blueprint('notice', __name__, url_prefix='/notices')
@@ -25,18 +25,25 @@ def get_notice(): #최근 n개 공지를 반환, , http://127.0.0.1:5000/notice?
     cursor = connection.cursor()
 
     get_query = '''
-    SELECT * FROM notice 
-    order by id desc 
-    limit %s
+    SELECT notice.id, notice.user_id, notice.title, notice.content, user.name
+    FROM notice
+    JOIN user ON notice.user_id = user.id
+    ORDER BY notice.id DESC
+    LIMIT %s;
+
     '''
     cursor.execute(get_query, (count,))
     result_list = cursor.fetchall()
-    notice_id_list = []
+    notice_list = []
     for row in result_list:
-        notice_id_list.append(row[0])
-    return {
-        'notice ids': notice_id_list
-    }
+        notice_list.append({"notice id" : row[0],
+                            "user id" : row[1],
+                            "title": row[2],
+                            "contents" : row[3],
+                            "user name" : row[4] }
+                                )
+
+    return notice_list
 
 
 @bp_notice.route('/', methods=['POST'])
@@ -110,7 +117,3 @@ def delete_notice(notice_id):
     return {
         'msg': msg
     }
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
