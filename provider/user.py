@@ -29,6 +29,8 @@ def login():
     else:
 
         return {
+            'request 학번, password' : (data['student_number'], data['password']),
+            'response from db' : f'password: ${result[0]}, id : ${result[1]}, name: ${result[2]}',
             "msg": "사용자 조회 실패",
         }
 
